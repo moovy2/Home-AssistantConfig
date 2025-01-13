@@ -1,0 +1,341 @@
+#-------------------------------------------
+# Garadget Configuration
+# Description: Setup for Garadget garage door opener/sensor
+#
+# Integration: MQTT
+# Hardware: Garadget (https://amzn.to/2jQLpVQ)
+#
+# Features:
+#   - Garage door status monitoring
+#   - Remote open/close control
+#   - Door brightness sensing
+#
+# Documentation:
+#   - Integration Guide: https://www.vcloudinfo.com/2019/03/how-to-add-garadget-to-home-assistant.html
+#   - Access Token Update: https://www.vcloudinfo.com/2020/05/fixing-garadget-in-home-assistant.html
+#
+# Original Repository: https://github.com/CCOSTAN/Home-AssistantConfig
+# Follow me on https://www.vcloudinfo.com/click-here
+#-------------------------------------------
+
+mqtt:
+  cover:
+    - name: "Large Garage Door"
+      device_class: 'garage'
+      command_topic: "garadget/GLarge/command"
+      state_topic: "garadget/GLarge/status"
+      value_template: >-
+        {% if value_json.status == 'closed' %}
+          closed
+        {% else %}
+          open
+        {% endif %}
+      payload_open: "open"
+      payload_close: "close"
+      payload_stop: "stop"
+
+    - name: "Small Garage Door"
+      device_class: 'garage'
+      command_topic: "garadget/GSmall/command"
+      state_topic: "garadget/GSmall/status"
+      value_template: >-
+        {% if value_json.status == 'closed' %}
+          closed
+        {% else %}
+          open
+        {% endif %}
+      payload_open: "open"
+      payload_close: "close"
+      payload_stop: "stop"
+
+  sensor:
+    - name: "Large Garage Door Since"
+      state_topic: "garadget/GLarge/status"
+      value_template: '{{ value_json.time }}'
+
+    - name: "Large Garage Door Brightness"
+      state_topic: "garadget/GLarge/status"
+      unit_of_measurement: '%'
+      value_template: '{{ value_json.bright }}'
+
+    - name: "Small Garage Door Since"
+      state_topic: "garadget/GSmall/status"
+      value_template: '{{ value_json.time }}'
+
+    - name: "Small Garage Door Brightness"
+      state_topic: "garadget/GSmall/status"
+      unit_of_measurement: '%'
+      value_template: '{{ value_json.bright }}'
+
+input_text:
+  last_person_home:
+    name: Last Person Home
+    initial: 'Carlo'
+
+group:
+  garage_doors:     # This group is used to check if doors are open or Closed.
+    name: Garage Doors
+    entities:
+      - cover.large_garage_door
+      - cover.small_garage_door
+
+######################################################################
+##  Send a notification to anyone coming home asking if they want to open the garage door.
+######################################################################
+
+automation:
+  - alias: 'Garage Helper'
+    id: 365adc21-5e96-4e78-9e94-089901a29430
+    mode: parallel
+    trigger:
+      - platform: state
+        entity_id:
+          - person.carlo
+          - person.stacey
+        from: 'not_home'
+        to: 'home'
+    condition:
+        - condition: state
+          entity_id: cover.large_garage_door
+          state: 'closed'
+    action:
+      # - variables:
+      #     person_triggered: "{{ trigger.to_state.entity_id.split('.')[1] }}"
+      - service: input_text.set_value
+        target:
+          entity_id: input_text.last_person_home
+        data:
+          value: "{{ trigger.to_state.entity_id.split('.')[1] }}"
+      - service: script.notify_engine_two_button
+        data:
+          title: 'Welcome Home!'
+          value1: 'Open Large Garage door?'
+          title1: 'Yes'
+          action1: 'OPEN_LARGE_GARAGE'
+          icon1: 'sfsymbols:arrow.up.circle'
+          destructive1: 'false'
+          title2: 'No'
+          action2: 'NO_OPEN_LARGE_GARAGE'
+          icon2: 'sfsymbols:house.circle'
+          destructive2: 'true'
+          who: "{{ states('input_text.last_person_home') }}"
+          group: 'Welcome_Home'
+
+  - alias: 'Open Large Garage Door Action'
+    id: 85e02a74-2ecc-4815-95a6-db864a6dffd7
+    trigger:
+      platform: event
+      event_type: mobile_app_notification_action
+      event_data:
+        action: OPEN_LARGE_GARAGE
+    condition:
+      - condition: state
+        entity_id: cover.large_garage_door
+        state: 'closed'
+      - condition: state
+        entity_id: group.family
+        state: 'home'
+    action:
+      - service: cover.open_cover
+        entity_id: cover.large_garage_door
+
+  - alias: 'Prompt to Open Front Door'
+    id: ece2b4a8-af21-41f4-a8fc-480a4d1ddabc
+    trigger:
+      platform: event
+      event_type: mobile_app_notification_action
+      event_data:
+        action: NO_OPEN_LARGE_GARAGE
+    condition:
+      - condition: state
+        entity_id: group.family
+        state: 'home'
+    action:
+      - service: script.notify_engine_two_button
+        data:
+          title: 'Unlock Front Door?'
+          value1: 'Do you want to unlock the front door instead?'
+          title1: 'Yes'
+          action1: 'UNLOCK_FRONT_DOOR'
+          icon1: 'sfsymbols:unlock'
+          destructive1: 'false'
+          title2: 'No'
+          action2: 'KEEP_FRONT_DOOR_LOCKED'
+          icon2: 'sfsymbols:lock'
+          destructive2: 'true'
+          who: "{{ states('input_text.last_person_home') }}"
+          group: 'Welcome_Home'
+
+  - alias: 'Unlock Front Door Action'
+    id: c3106db1-f2c4-4800-b1a3-76d440228600
+    trigger:
+      platform: event
+      event_type: mobile_app_notification_action
+      event_data:
+        action: UNLOCK_FRONT_DOOR
+    action:
+      - service: lock.unlock
+        entity_id: lock.front_door
+
+
+######################################################################
+##  Garage Status Announcements - Only during normal hours.
+######################################################################
+
+  - alias: 'Update Garage Get-Status'
+    id: 2b9e8359-c189-4399-b415-50107513fe90
+    trigger:
+      - platform: time_pattern
+        minutes: '/1'
+    action:
+      - service: mqtt.publish
+        data:
+          topic: "garadget/GSmall/command"
+          payload: "get-status"
+
+      - service: mqtt.publish
+        data:
+          topic: "garadget/GLarge/command"
+          payload: "get-status"
+
+  - alias: 'Garage Door State Change'
+    id: afec0987-edb1-4341-a524-a00ae4df9fb7
+    mode: restart
+    trigger:
+      - platform: state
+        entity_id:
+          - cover.large_garage_door
+          - cover.small_garage_door
+        from: 'open'
+        to: 'closed'
+        for: '00:02:00'
+
+      - platform: state
+        entity_id:
+          - cover.large_garage_door
+          - cover.small_garage_door
+        from: 'closed'
+        to: 'open'
+        for: '00:10:00'
+
+    action:
+      - choose:
+          - conditions: "{{ is_state('cover.large_garage_door','closed') }}"
+            sequence:
+              - service: script.speech_engine
+                data:
+                  DoorClosed: "The {{ trigger.entity_id.split('.')[1]|replace('_', ' ') }} is now {{ (trigger.to_state.state)|replace('_', ' ') }}."
+                  call_garage_check: 1
+              - delay: "00:10:00"
+              - service: script.garage_lights_off
+
+        default:
+          - service: script.speech_engine
+            data:
+              DoorClosed: "The {{ trigger.entity_id.split('.')[1]|replace('_', ' ') }} is now {{ (trigger.to_state.state)|replace('_', ' ') }}."
+              call_garage_check: 1
+
+
+  ###################################
+  ## Garadget Wind Door Checks -  [Garadget](https://amzn.to/2jQLpVQ)
+  ###################################
+
+  - alias: 'Wind Speed Garage Door Check'
+    id: 2819207a-1716-4552-be34-a8e0f7af004e
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.pirateweather_wind_speed
+        above: 30
+
+    condition:
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: cover.large_garage_door
+            state: 'open'
+          - condition: state
+            entity_id: cover.small_garage_door
+            state: 'open'
+
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.alert_mode
+
+      - service: script.notify_engine
+        data:
+          title: 'Check/Close Garage Doors - High Speed Wind Alert:'
+          value1: "Small: {{ states('cover.small_garage_door')}}"
+          value2: "Large: {{ states('cover.large_garage_door')}}"
+          group: 'information'
+          who: 'parents'
+
+      - service: script.speech_engine
+        data:
+          value1: >
+            "The wind speed is {{ states('sensor.pirateweather_wind_speed')|round}} miles per hour.  For safety, please close the garage doors.
+            {% if is_state('cover.large_garage_door', 'open') -%}
+              The Large Garage Door is open
+            {% endif -%}
+            {% if is_state('cover.small_garage_door', 'open') -%}
+              {% if is_state('cover.large_garage_door', 'open') -%}and
+              {%- endif %} The small Garage Door is open.
+            {% endif %}"
+
+  ##############################################################################
+
+  - alias: Is the Garage door Open at night - Checks every 30 minutes or 5 minutes after we drive away.
+    id: 4eb3e83e-4484-4102-a4ca-6bacd5b3cbdd
+
+    trigger:
+      - platform: time_pattern
+        minutes: '/45'
+      - platform: state
+        entity_id: group.family
+        to: not_home
+        for: 00:05:00
+      - platform: state
+        entity_id: input_boolean.tv_time
+        to: 'on'
+        from: 'off'
+
+    condition:
+      condition: or
+      conditions:
+        - condition: and
+          conditions:
+            - condition: state
+              entity_id: group.family
+              state: not_home
+              for: 00:05:00
+            - condition: or
+              conditions:
+                - condition: template
+                  value_template: "{{ states('cover.large_garage_door') == 'open' }}"
+                - condition: template
+                  value_template: "{{ states('cover.small_garage_door') == 'open' }}"
+        - condition: and
+          conditions:
+            - condition: state
+              entity_id: sun.sun
+              state: 'below_horizon'
+            - condition: or
+              conditions:
+                - condition: template
+                  value_template: "{{ states('cover.large_garage_door') == 'open' }}"
+                - condition: template
+                  value_template: "{{ states('cover.small_garage_door') == 'open'}}"
+
+    action:
+      - service: script.notify_engine
+        data:
+          title: 'Check Garage Doors:'
+          value1: "Small: {{ states('cover.small_garage_door')}}"
+          value2: "Large: {{ states('cover.large_garage_door')}}"
+          who: "family"
+          camera_entity: "camera.garagecam"
+          group: 'information'
+
+      - service: script.speech_engine
+        data:
+          value1: "Check the garage doors. The Small garage is {{ states('cover.small_garage_door')}} and the large garage is {{ states('cover.large_garage_door')}} [Only mention the garage door that is open and remind us to close it for the night]"
+

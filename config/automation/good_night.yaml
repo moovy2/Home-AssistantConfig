@@ -47,15 +47,11 @@
     - service: input_boolean.turn_off
       entity_id: input_boolean.good_night
     - service: homeassistant.turn_off
-      entity_id: group.outdoor_seasonal
-
+      entity_id:
+        - group.outdoor_seasonal
+        - switch.kitchen_accent_2
+        - group.master_bathroom_accents
     - service: script.interior_off
-
-    - wait_template: "{{ states.media_player.master_bedroom.state == 'standby' }}"
-      timeout: '00:30:00'
-
-    - service: homeassistant.turn_off
-      entity_id: group.landscaping
 
 - alias: 'Bed Presence AMP Trigger'
   id: 26846f7b-bc76-43d2-99be-af552d2300f
@@ -81,6 +77,13 @@
           - service: homeassistant.turn_off
             target:
               entity_id: switch.lr_amp
+          - service: homeassistant.turn_off
+            target:
+              entity_id: 
+                - switch.kitchen_accent_2
+                - light.outdoor_bathroom
+                - group.master_bathroom_accents
+                - group.landscaping     
 
     default:
       - service: homeassistant.turn_on

@@ -14,7 +14,7 @@ automation:
     trigger:
       - platform: numeric_state
         entity_id: sensor.blink_blink1_temperature
-        above: 55
+        above: 60
         for:
           minutes: 20
       - platform: event
@@ -23,18 +23,16 @@ automation:
     condition:
       - condition: numeric_state
         entity_id: sensor.blink_blink1_temperature
-        above: 55
+        above: 60
 
     action:
-
-      - service: blink.blink_update
 
       - service: script.notify_engine
         data:
           title: 'Check Fridge'
           value1: "Please check the fridge, the temperature has been {{ states('sensor.blink_blink1_temperature') }} degrees for at least 20 minutes."
           who: 'family'
-          apns_id: 'information'
+          group: 'information'
 
       - wait_template: "{{ states.group.family.state == 'home' }}"
 

@@ -1,0 +1,50 @@
+#-------------------------------------------
+# @CCOSTAN
+# Original Repo : https://github.com/CCOSTAN/Home-AssistantConfig
+#-------------------------------------------
+# Waze Travel Time Sensor
+# https://github.com/CCOSTAN/Home-AssistantConfig/issues/1463
+#-------------------------------------------
+# Mag Safe Phone Holders - https://amzn.to/4bDBBJf
+#-------------------------------------------
+##############################################################################
+###  Automations - Warn us when there is traffic to/from work.
+### There is also a Speech Macro with this.
+##############################################################################
+
+automation:
+
+  - alias: "Check on Traffic to Spectrum"
+    id: 7dcfc6aa-5abc-460b-b783-609748ed56d7
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.waze_travel_time
+        above: 34
+
+    condition:
+      - condition: time
+        after: '08:00:00'
+        before: '20:30:00'
+        weekday:
+          - mon
+          - tue
+          - wed
+          - thu
+          - fri
+
+    action:
+      - service: script.notify_engine
+        data:
+          value1: 'There is traffic on the Spectrum Route'
+          value2: "Reported Time is : {{ states.sensor.waze_travel_time.state }} minutes"
+          who: 'family'
+
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.alert_mode
+
+      - service: script.speech_engine
+        data:
+          value1: "Attention! Traffic on the Spectrum Route for Justins job. Estimated travel time right now is {{ states.sensor.waze_travel_time.state }} minutes. Beep beep!"
+
+          
+

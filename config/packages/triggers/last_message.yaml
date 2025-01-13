@@ -7,18 +7,36 @@ homeassistant:
     input_boolean.lastmsg:
       friendly_name: 'Repeat Message'
       icon: mdi:repeat-once
-
-      
+ 
 #-------------------------------------------
 input_boolean:
   lastmsg:
     name: Last Message
     initial: off
 #-------------------------------------------
-sensor:
-  - platform: mqtt
-    state_topic: "polly/lastmsg"
-    name: "Last Message"
+
+template:
+  - trigger:
+      platform: event
+      event_type: openai_instructions_sent
+    sensor:
+      - name: "openai_instructions"
+        unique_id: openai_instructions
+        state: "on"
+        attributes:
+          instructions: "{{ trigger.event.data.instructions }}"
+  
+  - trigger:
+      platform: event
+      event_type: openai_response
+    sensor:
+      - name: "openai_response"
+        unique_id: openai_response
+        state: "on"
+        attributes:
+          response: "{{ trigger.event.data.response }}"
+
+
 ##############################################################################
 ###  Automations -
 ##############################################################################
@@ -33,18 +51,19 @@ automation:
         to: 'on'
 
     action:
-      - service: tts.amazon_polly_say
+      - service: tts.cloud_say
         entity_id:
           - media_player.livingroomCC
-          - media_player.entry_alarm_panel
-          - media_player.bedroom_alarm_panel
+          # - media_player.entry_alarm_panel
+          # - media_player.bedroom_alarm_panel
         data:
-          message: >
-            <speak>
-            {{states.sensor.last_message.state}}
-            </speak>
-          cache: true
+          options: 
+            voice: JennyNeural
+          message: >-
+             "{{ state_attr('sensor.openai_response', 'response') }}"
+          cache: false
 
       - service: input_boolean.turn_off
         entity_id:
           - input_boolean.lastmsg
+
