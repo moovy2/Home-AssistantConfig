@@ -8,11 +8,11 @@
 
   trigger:
     - platform: state
-      entity_id: sensor.dark_sky_precip
+      entity_id: sensor.pirateweather_precip
       to: 'rain'
     - platform: numeric_state
-      entity_id: sensor.dark_sky_precip_intensity
-      above: 0.2
+      entity_id: sensor.pirateweather_precip_intensity
+      above: 0.5
     - platform: numeric_state
       entity_id: sensor.blitzortung_lightning_counter
       above: 1
@@ -31,10 +31,7 @@
       - condition: or
         conditions:
           - condition: numeric_state
-            entity_id: sensor.dark_sky_cloud_coverage
-            above: 90
-          - condition: numeric_state
-            entity_id: sensor.dark_sky_precip_intensity
+            entity_id: sensor.pirateweather_precip_intensity
             above: 0.2
           - condition: numeric_state
             entity_id: sensor.blitzortung_lightning_counter
@@ -63,7 +60,8 @@
 
     - service: script.speech_engine
       data:
-        value1: "It is getting a little dark inside the house because of the {{trigger.entity_id.split('_')[2]|replace('precip','rain')|replace('counter','lightning')|replace('carlo','rain') }} {{trigger.entity_id.split('_')[3]|replace('intensity',' ')| replace('carlo','and clouds')}} outside.  I will turn on some extra lights in the living room."
+        value1: "Because of the {{trigger.entity_id.split('_')[2]|replace('precip','rain')|replace('counter','lightning')|replace('carlo','rain') }} {{trigger.entity_id.split('_')[3]|replace('intensity',' ')| replace('carlo','and clouds')}} outside.  I will turn on some extra lights in the living room."
+        call_outside_weather: 1
         call_window_check: 1
         call_garage_check: 1
 

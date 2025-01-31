@@ -7,9 +7,6 @@
   id: acacc9b4-b66d-46d2-bf6d-47b75afddb57
   trigger:
     - platform: state
-      entity_id: binary_sensor.downstairs_nest_away
-      to: 'off'
-    - platform: state
       entity_id: group.family
       to: 'home'
 
@@ -26,8 +23,8 @@
   action:
     - service: light.turn_on
       entity_id:
-        - light.living_room_slider
-        - light.foyer_door
+        - light.main_slider
+        - light.foyer
         - light.fridge
         - light.M1_front_right
         - light.S1
@@ -40,23 +37,16 @@
     - service: switch.turn_on
       entity_id:
         - group.kitchen_Accents
+        - switch.front_office_lamp
+        - switch.living_room_outlet
     - delay: '00:05:00'
     - service: light.turn_off
       entity_id:
         - light.S1
         - light.S4
-        - light.foyer_door
+        - light.foyer
         - light.fridge
-        - light.living_room_slider
+        - light.main_slider
         - light.M1_front_right
 
-    # Only Disarm if armed.  Otherwise, Exit out.
-    - condition: state
-      entity_id: alarm_control_panel.alexa_guard
-      state:
-        - armed_away
-        - armed_home
-        - armed
 
-    - service: alarm_control_panel.alarm_disarm
-      entity_id: alarm_control_panel.alexa_guard

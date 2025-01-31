@@ -1,3 +1,11 @@
+#-------------------------------------------
+# Switches Configuration
+# Description: Groups and organizes various switches in the home
+#
+# Original Repository: https://github.com/CCOSTAN/Home-AssistantConfig
+# Follow me on https://www.vcloudinfo.com/click-here
+#-------------------------------------------
+
 Interior Switches:
   entities:
     - switch.kitchen_accent_1
@@ -10,7 +18,9 @@ Interior Switches:
     - switch.foyer_outlet
     - switch.den_outlet
     - switch.living_room_outlet
-    - switch.living_room_outlet_2
+    - switch.living_room_tv_outlet
+    - switch.office_lamp_switch_socket
+    - switch.front_office_lamp
 
 Kitchen Accents:
   entities:
@@ -29,3 +39,4 @@ Outdoor Seasonal:
     - switch.xmas4
     - switch.xmas_dual_outlet_1
     - switch.xmas_dual_outlet_2
+    - switch.outdoor_xmas

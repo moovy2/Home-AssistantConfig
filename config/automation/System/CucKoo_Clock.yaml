@@ -16,8 +16,8 @@
 
   condition:
     - condition: time
-      after: '09:29:00'
-      before: '21:30:00'
+      after: '09:00:00'
+      before: '22:00:00'
     - condition: or  #Either we are home or Guest_Mode is on.
       conditions:
         - condition: state
@@ -37,16 +37,19 @@
 
     - service: media_player.play_media
       data:
-        entity_id: >
-          {% if states.group.bed.state == 'off' %}
-          media_player.livingroomCC
-          {% else %}
-          media_player.alarm_clock, media_player.bedroom_alarm_panel
-          {% endif %}
+        entity_id: media_player.livingroomCC
         media_content_id: >
           {% if now().strftime("%M")|int == 30 %}
-          https://raw.githubusercontent.com/CCOSTAN/Home-AssistantConfig/master/config/sounds/cuckoo-clock-01.wav
+          {% if now().strftime("%B") == 'October' %}
+          https://raw.githubusercontent.com/CCOSTAN/Home-AssistantConfig/master/config/sounds/october-clock/cuckoo-clock-01.wav
           {% else %}
-          https://raw.githubusercontent.com/CCOSTAN/Home-AssistantConfig/master/config/sounds/cuckoo-clock-{{now().strftime("%I")}}.wav
+          https://raw.githubusercontent.com/CCOSTAN/Home-AssistantConfig/master/config/sounds/cuckoo-clock/cuckoo-clock-01.wav
+          {% endif %}
+          {% else %}
+          {% if now().strftime("%B") == 'October' %}
+          https://raw.githubusercontent.com/CCOSTAN/Home-AssistantConfig/master/config/sounds/october-clock/cuckoo-clock-{{now().strftime("%I")}}.wav
+          {% else %}
+          https://raw.githubusercontent.com/CCOSTAN/Home-AssistantConfig/master/config/sounds/cuckoo-clock/cuckoo-clock-{{now().strftime("%I")}}.wav
+          {% endif %}
           {% endif %}
         media_content_type: audio/mp4
