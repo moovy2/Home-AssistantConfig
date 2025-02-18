@@ -1,13 +1,18 @@
 <h1 align="center">
-  <a name="logo" href="https://www.vCloudInfo.com/tag/iot"><img src="https://raw.githubusercontent.com/CCOSTAN/Home-AssistantConfig/master/config/www/custom_ui/floorplan/images/branding/twitter_profile.png" alt="Bear Stone Smart Home" width="200"></a>
+  <a name="logo" href="https://www.vCloudInfo.com/tag/iot"><img src="https://raw.githubusercontent.com/CCOSTAN/Home-AssistantConfig/master/x_profile.png" alt="Bear Stone Smart Home" width="200"></a>
   <br>
   Bear Stone Smart Home Documentation
 </h1>
 <h4 align="center">Be sure to :star: my configuration repo so you can keep up to date on any daily progress!</h4>
 <p align="center"><a align="center" target="_blank" href="https://vcloudinfo.us12.list-manage.com/subscribe?u=45cab4343ffdbeb9667c28a26&id=e01847e94f"><img src="https://feeds.feedburner.com/RecentCommitsToBearStoneHA.1.gif" alt="Recent Commits to Bear Stone Smart Home" style="border:0"></a></p>
 <div align="center">
+
+[![X Follow](https://img.shields.io/static/v1?label=talk&message=3k&color=blue&logo=twitter&style=for-the-badge)](https://x.com/ccostan)
+[![YouTube Subscribe](https://img.shields.io/youtube/channel/subscribers/UC301G8JJFzY0BZ_0lshpKpQ?label=VIEW&logo=Youtube&logoColor=%23DF5D44&style=for-the-badge)](https://www.youtube.com/vCloudInfo?sub_confirmation=1)
+[![GitHub Follow](https://img.shields.io/github/stars/CCOSTAN/Home-AssistantConfig?label=sTARS&amp;logo=Github&amp;style=for-the-badge)](https://github.com/CCOSTAN) <br>
+[![HA Version Badge](https://raw.githubusercontent.com/ccostan/home-assistantconfig/master/ha-version-badge.svg)](https://github.com/CCOSTAN/Home-AssistantConfig/blob/master/config/.HA_VERSION)
+
   <h4>
-    <a href="https://github.com/CCOSTAN/Home-AssistantConfig/stargazers"><img src="https://img.shields.io/github/stars/CCOSTAN/Home-AssistantConfig.svg?style=plasticr"/></a>
     <a href="https://github.com/CCOSTAN/Home-AssistantConfig/commits/master"><img src="https://img.shields.io/github/last-commit/CCOSTAN/Home-AssistantConfig.svg?style=plasticr"/></a>
         <a href="https://github.com/CCOSTAN/Home-AssistantConfig/commits/master"><img src="https://img.shields.io/github/commit-activity/y/CCOSTAN/Home-AssistantConfig.svg?style=plasticr"/></a>
 
@@ -29,7 +34,7 @@ This Repo is designed for Smart Home inspiration.  The configuration, devices, l
       Todo List
     </a>
     <span> | </span>
-    <a href="https://twitter.com/BearStoneHA">
+    <a href="https://x.com/BearStoneHA">
       Smart Home Stats
     </a>
     <span> | </span>
@@ -65,16 +70,14 @@ As of 2018, I have migrated everything to a Docker based platform.  You can read
 * [Docker](https://Docker.com) - Docker runs on a Ubuntu Server Core base. [Video on Ubuntu Upgrades](https://youtu.be/w-YNtU1qtlk)
 * [Youtube Video on Upgrading Home Assistant in Docker](https://youtu.be/ipatCbsY-54) - Be sure to Subscribe to get all Home Assistant videos.
 * [Home Assistant Container](https://home-assistant.io/) - It all starts here.
-* The amazing [Floorplan](https://github.com/pkozul/ha-floorplan) project to help visualize my smarthome.
+* The amazing [Floorplan](https://github.com/ExperienceLovelace/ha-floorplan) project to help visualize my smarthome.
 * SSL via [SSLS](https://SSLS.com) - 5 Bucks A Year! - Keeps me safe! - [Youtube Video on Port Forwarding](https://youtu.be/y5NOP1F-xGU) - On my Arris TG1682 Modem
 * [Docker-Compose.yaml](https://github.com/CCOSTAN/Docker_Support) - Realtime list of all the Containers.
 * [Dasher Container](https://github.com/maddox/dasher) to leverage those cheap [Amazon Dash Buttons](https://youtu.be/rwQVe6sIi9w)
-* [HomeBridge Container](https://github.com/nfarina/homebridge) for full HA <-> Homekit compatibility.
+* [HomeBridge Container](https://github.com/homebridge/homebridge) for full HA <-> Homekit compatibility.
 * [Unifi controller Container to manage](https://github.com/jacobalberty/unifi-docker) [APs](https://amzn.to/2mBSfE9)
 
 ![Screenshot of SmartHome](https://lh3.googleusercontent.com/-vKGF5gdz_VY/WVpP7qjsmjI/AAAAAAADVZ4/sGyiS1PjouUQxrEbWVfot6raxcElv4r-wCHMYCw/s1600/clip_image001%255B4%255D)
-Lots of my gear comes from [BetaBound](https://goo.gl/0vxT8A) for Beta Testing and reviews.
-Be sure to use the referral code 'Reliable jaguar' so we both get priority for Beta Tests!
 
 #### <a name="diagram"></a>Smart Home Diagram - Get your icons (<a href="https://www.vcloudinfo.com/2018/07/the-bear-stone-home-assistant-icon.html">here</a>).
 Here is how all the parts talk to each other.  Keep reading to see code examples and explanations.
@@ -406,7 +409,7 @@ AMP redirect script - /config/script/amp_settings.yam</a><br>
 </td><td align="center"><a href="https://www.amazon.com/TP-Link-HS100-Required-Google-Assistant/dp/B0178IC734/ref=as_li_ss_il?ac_md=0-0-aHMxMDA=-ac_d_rm&keywords=HS100&pd_rd_i=B0178IC734&pd_rd_r=3e0cf386-7879-4383-bab1-a842746ee724&pd_rd_w=SR8qM&pd_rd_wg=2uLFe&pf_rd_p=404c4843-2c96-4d0d-a5fe-2b0598693e61&pf_rd_r=6WZ3KGN3EJ9B23GC84JS&qid=1567261967&s=gateway&linkCode=li2&tag=vmw0a-20&linkId=9a49bb07f7e1c0391b7a052fcdc52226&language=en_US" target="_blank"><img border="0" src="https://ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=B0178IC734&Format=_SL160_&ID=AsinImage&MarketPlace=US&ServiceVersion=20070822&WS=1&tag=vmw0a-20&language=en_US" ></a><img src="https://ir-na.amazon-adsystem.com/e/ir?t=vmw0a-20&language=en_US&l=li2&o=1&a=B0178IC734" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /></td></tr>
 <tr><td colspan="4">
 
-To me, Voice is the coolest part of the smart home.  It gives it personality.  It's something not just anyone has and helps your house stand apart from the pack.  I use the [Amazon Polly TTS](https://home-assistant.io/components/tts/) component since it sounds the closest to Alexa.  This gives a seemless transition from Alexa to Home Assistant responding.  Most think it is just one system.  The mixer allows TTS to mix right in over Music.  The TP-Link Outlet  is used to turn off the Mixer and AMP when we do not need it.  It's a great inexpensive solution.
+To me, Voice is the coolest part of the smart home.  It gives it personality.  It's something not just anyone has and helps your house stand apart from the pack.  I use the [Amazon Polly TTS](https://www.home-assistant.io/integrations/tts/) component since it sounds the closest to Alexa.  This gives a seemless transition from Alexa to Home Assistant responding.  Most think it is just one system.  The mixer allows TTS to mix right in over Music.  The TP-Link Outlet  is used to turn off the Mixer and AMP when we do not need it.  It's a great inexpensive solution.
 <details>
 <summary>Turn off all the voice devices when we are not home or in bed.</summary><p align="center">
 <a href=https://github.com/CCOSTAN/Home-AssistantConfig/blob/master/config/automation/away.yaml>
@@ -466,7 +469,8 @@ Once you can teach your house to talk, you just keep expanding on its vocabulary
 The Hubs help the home communicate across all the various protocols running in the house.  The Hue hubs (I have 2 actually) talk to most of the lights. The Gen 1 handles upstairs and outside and the gen 2 handles everything else. Some lights and switches talk over Zwave to the Wink Hub.  The RM Pro talks 433Mhz to my EtekCity outlets.
 
 <details>
-<summary>Using [Etekcity Outlets](https://amzn.to/2efNoBP) to control accent lighting above kitchen cabinets and room cutouts.</summary><p align="center">
+<summary>Using <a href=https://amzn.to/2efNoBP>
+Etekcity Outlets</a> to control accent lighting above kitchen cabinets and room cutouts.</summary><p align="center">
 <a href=https://github.com/CCOSTAN/Home-AssistantConfig/blob/master/config/automation/kitchen_lights_and_accents.yaml>
 Kitchen Accents Automation - /config/automation/kitchen_lights_and_accents.yaml</a><br>
 <a href=https://github.com/CCOSTAN/Home-AssistantConfig/blob/master/config/automation/master_bath_accents.yaml>
@@ -792,7 +796,7 @@ Motion automations - /config/script/front_house_motion.yaml</a><br>
 [JuiceBox Pro 40 EVSE](https://amzn.to/2AIdSdx)
 </td><td align="center">
 
-[Chevy Bolt Electric Car](https://amzn.to/2DRP83a)
+[Tesla Model Y Electric Car](https://amzn.to/3UM4BZ5)
 </td><td align="center">
 
 [Siri, are my garage doors closed?](https://www.vCloudInfo.com/2017/07/my-smart-home-look-at-parts-that-make.html)
@@ -955,12 +959,10 @@ Feel free to join the conversations there.
 [![Screenshot of Alarm Clock View](https://i.imgur.com/mLMrky1.jpg)](https://www.vcloudinfo.com/2017/11/building-worlds-greatest-smart-alarm.html)
 [![Screenshot of Alarm View](https://i.imgur.com/zmb3Rtn.png)](https://www.vcloudinfo.com/2017/07/visualizing-smart-home-using-home.html)
 
-**All files are now being edited with [Atom](https://atom.io/).**
-
-**All of my configuration files are tested against the most stable version of home-assistant using [Travis](https://travis-ci.org/CCOSTAN/Home-AssistantConfig).**
+**All files are now being edited with [Cursor.ai](https://www.cursor.com/).**
 
 **Still have questions on my Config?** <br>
-**Message me on twitter :** [![Follow CCostan](https://img.shields.io/twitter/follow/CCostan)](https://www.twitter.com/ccostan) or [![Follow Bear Stone Home](https://img.shields.io/twitter/follow/BearStoneHA)](https://www.twitter.com/BearStoneHA)
+**Message me on X :** [![Follow CCostan](https://img.shields.io/twitter/follow/CCostan)](https://www.x.com/ccostan) or [![Follow Bear Stone Home](https://img.shields.io/twitter/follow/BearStoneHA)](https://www.x.com/BearStoneHA)
 
 <p align="center">
 <a target="_blank" href="https://www.buymeacoffee.com/vCloudInfo"><img src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg" alt="Buy me a coffee"><span style="margin-left:5px">You can buy me a coffee</span></a><a target="_blank" href="https://www.buymeacoffee.com/vCloudInfo"><img src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg" alt="Buy me a coffee"></a>

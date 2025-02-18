@@ -1,0 +1,83 @@
+#-------------------------------------------
+# @CCOSTAN
+# Original Repo : https://github.com/CCOSTAN/Home-AssistantConfig
+# Neato Support for D7 Connected Botvac - control my [Neato Vacuum](https://amzn.to/2kqnnqu) with Home Assistant.
+# Switched from Neato to Dreame Vacuum - https://amzn.to/4f7NpFP
+#-------------------------------------------
+
+##############################################################################
+###  Configuration - Authentication via the DEVELOPER Portal
+### HACS - https://github.com/Tasshack/dreame-vacuum
+##############################################################################
+
+automation:
+
+##############################################################################
+###  Automations - Help Vacuum!
+### https://www.vcloudinfo.com/2020/05/home-assistant-neato-vacuum-automation.html
+##############################################################################
+
+  - alias: 'Vacuum Sensor Cleaning Silencer'
+    id: 6548de52-a4a4-4df2-9d66-9c2c15577a7f
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.l10s_vacuum_sensor_dirty_left
+        below: 10
+        
+    condition:
+      - condition: state
+        entity_id: sensor.l10s_vacuum_task_status
+        state: 'completed'
+        
+    action:
+      - service: button.press
+        target:
+          entity_id: button.l10s_vacuum_reset_sensor
+        
+
+  - alias: 'Help Vacuum'
+    id: 6548de52-a4a4-4df2-9d66-9c2c15577a7e
+    trigger:
+      - platform: state
+        entity_id: sensor.l10s_vacuum_error
+      - platform: event
+        event_type: event_did_someone_help_vacuum_loop
+     
+    condition:
+      - condition: template
+        value_template: "{{ states('sensor.l10s_vacuum_error') not in ['no_error', 'unavailable'] }}"
+
+    action:
+      - wait_template: "{{ is_state('group.bed', 'off') }}"
+        timeout:
+          seconds: 600
+        continue_on_timeout: true
+      - wait_template: "{{ is_state('group.family', 'home') }}"
+      - delay: 00:03:00
+      
+      - service: vacuum.locate
+        entity_id: vacuum.l10s_vacuum
+
+      - service: script.speech_engine
+        data:
+          value1: > 
+             {% set error_description = state_attr('sensor.l10s_vacuum_error', 'description') %}
+             {{ "Vacuum is complaining: " ~ error_description ~ " [ask Residents to help]" }}
+             Currently in {{states('sensor.l10s_vacuum_current_room')}}"
+
+      - service: script.notify_engine
+        data:
+          title: 'Help vacuum'
+          value1: "{{ state_attr('sensor.l10s_vacuum_error', 'description') }} - {{states('sensor.l10s_vacuum_current_room')}}"
+          who: 'family'
+          ios_category: 'camera'
+          camera_entity: 'camera.l10s_vacuum_map'
+          content_type: 'jpeg'
+          group: 'information'
+
+      - delay: 00:01:00            
+      - service: vacuum.locate
+        entity_id: vacuum.l10s_vacuum
+
+      - delay: 00:20:00
+      - event: event_did_someone_help_vacuum_loop

@@ -7,13 +7,13 @@
   mode: single
   trigger:
     - platform: numeric_state
-      entity_id: sensor.dark_sky_wind_speed
-      above: 24
+      entity_id: sensor.pirateweather_wind_speed
+      above: 30
     - platform: numeric_state
-      entity_id: sensor.dark_sky_wind_speed
+      entity_id: sensor.pirateweather_wind_speed
       above: 40
     - platform: numeric_state
-      entity_id: sensor.dark_sky_wind_speed
+      entity_id: sensor.pirateweather_wind_speed
       above: 60
 
   action:
@@ -21,16 +21,16 @@
       data:
         title: 'VERY HIGH WINDS:'
         value1:  >-
-          {% set windspeed = states.sensor.dark_sky_wind_speed.state | round %}
-          {% if ( windspeed > 25 ) and ( windspeed <= 40 ) %}
+          {% set windspeed = states.sensor.pirateweather_wind_speed.state | round %}
+          {% if ( windspeed > 31 ) and ( windspeed <= 45 ) %}
              HEAVY WINDS!!! Current Wind Speed is : {{windspeed}} mph! Be VERY careful outdoors!
-          {% elif ( windspeed > 40 ) and ( windspeed <= 60 ) %}
+          {% elif ( windspeed > 45 ) and ( windspeed <= 60 ) %}
              Warning! Wind speed is {{windspeed}} MPH. FIND SHELTER IMMEDIATELY!
           {% elif ( windspeed > 60 ) %}
              HURRICANE WINDS. FIND SHELTER, AND STAY INDOORS!
           {% endif %}
         who: 'family'
-        apns_id: 'Alert'
+        group: 'Alert'
 
     - service: input_boolean.turn_on
       entity_id: input_boolean.alert_mode
@@ -38,8 +38,8 @@
     - service: script.speech_engine
       data:
         value1: >
-          {% set windspeed = states.sensor.dark_sky_wind_speed.state | round %}
-          {% if ( windspeed > 25 ) and ( windspeed <= 40 ) %}
+          {% set windspeed = states.sensor.pirateweather_wind_speed.state | round %}
+          {% if ( windspeed > 31 ) and ( windspeed <= 40 ) %}
              HEAVY WINDS!!! Current Wind Speed is : {{windspeed}} mph! Be VERY careful outdoors!
           {% elif ( windspeed > 40 ) and ( windspeed <= 60 ) %}
              Warning! Wind speed is {{windspeed}} MPH. FIND SHELTER IMMEDIATELY!
@@ -50,18 +50,6 @@
         call_garage_check: 1
 
     - service: script.emergency
-
-    - service: script.tweet_engine_no_image
-      data:
-        tweet: >
-          {% set windspeed = states.sensor.dark_sky_wind_speed.state | round %}
-          {% if ( windspeed > 25 ) and ( windspeed <= 40 ) %}
-             HEAVY WINDS!!! Current Wind Speed is : {{windspeed}} mph! Be VERY careful outdoors! #Florida #Weather (https://amzn.to/2jQLpVQ)
-          {% elif ( windspeed > 40 ) and ( windspeed <= 60 ) %}
-             Current Wind Speed is : {{windspeed}} mph! Warning! #Florida #Weather (https://amzn.to/2jQLpVQ) FIND SHELTER IMMEDIATELY! #Florida #Weather (https://amzn.to/2jQLpVQ)
-          {% elif ( windspeed > 60 ) %}
-             Current Wind Speed is : {{windspeed}} mph! HURRICANE WINDS. FIND SHELTER, AND STAY INDOORS! #Florida #Weather (https://amzn.to/2jQLpVQ)
-          {% endif %}
 
     - delay:
         hours: 2

@@ -2,24 +2,33 @@
 ##  Speak Max!  Speak Max!!
 ######################################################################
 
+# Define an alias for this automation
 - alias: Guard Dog
+  # Give the automation a unique ID
   id: 4e785061-1157-4b8d-8d48-3a74904f8e54
+  # Set the triggers for the automation
   trigger:
+    # The automation will be triggered when the state of the "input_boolean.guard_dog" entity changes from "off" to "on"
     - platform: state
       entity_id: input_boolean.guard_dog
       to: 'on'
       from: 'off'
+    # The automation will also be triggered when the state of the "lock.front_door" entity changes from "locked" to "unlocked"
     - platform: state
-      entity_id: binary_sensor.front_door_opened
-      to: 'on'
-      from: 'off'
+      entity_id: lock.front_door
+      to: 'unlocked'
+      from: 'locked'
 
-  # condition:
-  #   - condition: state
-  #     entity_id: group.garage_doors
-  #     state: 'closed'
+  condition:
+    - condition: state
+      entity_id: group.garage_doors
+      state: 'closed'
 
   action:
     - service: script.dog_bark
+    - delay:
+        minutes: 10
     - service: input_boolean.turn_off
       entity_id: input_boolean.guard_dog
+
+      

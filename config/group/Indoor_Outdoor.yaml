@@ -4,10 +4,11 @@ Interior_Lights:
     - group.kitchen_accents
     - light.bedroom
     - light.bedroom_lights
-    - light.den_lights
+    - light.den_2
+    - light.den1
     - light.dinette_lights
     - light.dining_room_lights
-    - light.foyer_lights
+    - light.foyer
     - light.garage_lights
     - light.hallway_lights
     - light.kitchen_lights
@@ -16,6 +17,8 @@ Interior_Lights:
     - light.office_lights
     - light.upstairs_lights
     - light.garage_hallway
+    - light.sink
+    - light.upstairs_lamp
 
 Exterior_Lights:
   entities:

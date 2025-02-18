@@ -3,93 +3,82 @@
 # Original Repo : https://github.com/CCOSTAN/Home-AssistantConfig
 # Phyn Smart Water ShutOff Support
 # https://www.vcloudinfo.com/2020/05/phyn-plus-smart-water-shutoff-device.html
+# Added in Custom HACK integration via https://github.com/MizterB/homeassistant-phyn
 #-------------------------------------------
 ######################################################################
 ##  Phyn Plus Water ShutOff - https://amzn.to/2Zy3sbJ
 ######################################################################
 
-ios:
-  push:
-    categories:
-      - name: Phyn
-        identifier: 'phyn'
-        actions:
-          - identifier: 'PHYN_WATER_ON'
-            title: 'Turn Water Back On'
-            activationMode: 'background'
-            authenticationRequired: no
-            destructive: yes
-
 automation:
-  ###################################
-  ##  From IFTTT - Notifications
-  ###################################
   - alias: 'Phyn ShutOff Notification'
     id: 78bbd270-ee1e-4b3d-80fd-44ce7c66dab5
     mode: single
 
     trigger:
-      - platform: event
-        #Sent from IFTTT Webhooks : {"action":"IFTTT_Phyn", "alert_type":" {{AlertType}}", "where":"{{SuggestedFixtures}}"}
-        event_type: ifttt_webhook_received
-        event_data:
-          action: IFTTT_Phyn
+      - platform: state
+        entity_id: switch.phyn_shutoff_valve
+        to: 'off'
+
+    condition:
+      - condition: time
+        before: '03:00'
+        after: '04:00'
 
     action:
-      - service: script.speech_engine
-        data:
-          value1: >
-            {{ [
-            "Attention please.  The Phyn unit has detected a possible leak.  Please verify there are no leaks in the house. "
-            ] | random }}
-          call_no_announcement: 1
-
-      - service: script.tweet_engine_image
-        data:
-          tweet: >
-            {{ [
-            "The @Phyn has detected a {{ trigger.event.data.alert_type }} and notified us using Home Assistant. ",
-            "I am shutting down the water since @Phyn detected {{ trigger.event.data.alert_type }} .",
-            "Time to let @ccostan know that @Phyn has detected {{ trigger.event.data.alert_type }} ."
-            ] | random + " #SavingWater (https://www.vcloudinfo.com/2020/05/phyn-plus-smart-water-shutoff-device.html)" }}
-          image: >-
-            {{ [
-            "/config/www/custom_ui/floorplan/images/branding/pipeleak.png"
-            ] | random }}
-
-      - wait_template: >-
-         {{ states.sun.sun.state == 'above_horizon' }}
-
-      - service: script.notify_engine
+      - service: script.notify_engine_two_button
         data:
           title: 'Phyn Leak Detection'
-          value1: 'Phyn is sensing {{ trigger.event.data.alert_type }} and turned off the water.  Please verify {{ trigger.event.data.where }}.'
+          value1: 'Phyn is sensing a leak and turned off the water.  Please verify.'
           who: 'parents'
-          ios_category: "phyn"
-          apns_id: 'IFTTT_Phyn'
+          group: 'Phyn'
+          action1: 'PHYN_WATER_ON'
+          action2: 'SNOOZE_PHYN_NOTIFICATION'
+          icon1: 'sfsymbols:arrow.up.circle'
+          icon2: 'sfsymbols:clock'
+          level: 'critical'
 
   - alias: Turn Phyn Water On
     id: 1f295bb8-8925-4b22-PHYN-9fe079b295a8
     trigger:
       platform: event
-      event_type: ios.notification_action_fired
+      event_type: mobile_app_notification_action
       event_data:
-        actionName: PHYN_WATER_ON
+        action: PHYN_WATER_ON
     action:
-      - service: ifttt.trigger
-        data: {"event":"phyn_water_on"}
+      - service: homeassistant.turn_on
+        entity_id: switch.phyn_shutoff_valve
 
       - service: script.notify_engine
         data:
           title: 'Phyn Leak Detection'
-          value1: 'Request Recieved. Attempting to Turn the Water back on.'
+          value1: 'Request Received. Attempting to Turn the Water back on.'
           who: 'parents'
-          apns_id: 'IFTTT_Phyn'
+          group: 'Phyn'
+          level: 'time-sensitive'
 
       - service: script.speech_engine
         data:
           value1: >
-            {{ [
-            "I have been asked to Turn the House Water back on.  Please verify there are no leaks in the house. "
-            ] | random }}
+            I have been asked to Turn the House Water back on.  Please verify there are no leaks in the house.
           call_no_announcement: 1
+
+  - alias: Snooze Phyn Notification
+    id: 2f295bb8-8925-4b22-PHYN-9fe079b295a8
+    trigger:
+      platform: event
+      event_type: mobile_app_notification_action
+      event_data:
+        action: SNOOZE_PHYN_NOTIFICATION
+    action:
+      - delay: '00:30:00'
+      - service: script.notify_engine_two_button
+        data:
+          title: 'Phyn Leak Detection'
+          value1: 'Phyn is sensing a leak and turned off the water.  Please verify.'
+          who: 'parents'
+          group: 'Phyn'
+          action1: 'PHYN_WATER_ON'
+          action2: 'SNOOZE_PHYN_NOTIFICATION'
+          icon1: 'sfsymbols:arrow.up.circle'
+          icon2: 'sfsymbols:clock'
+          level: 'critical'

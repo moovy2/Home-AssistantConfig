@@ -2,6 +2,9 @@ family:
   entities:
     - person.carlo
     - person.stacey
+    - person.justin
+    - person.paige
+
 
 arriving:
   name: Arriving

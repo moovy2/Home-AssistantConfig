@@ -1,8 +1,10 @@
 #-------------------------------------------
-# @CCOSTAN
-# Original Repo : https://github.com/CCOSTAN/Home-AssistantConfig
-# Read all about this and more at https://vCloudInfo.com
-######################################################################################################
+# Home Assistant Configuration
+# Author: Carlo Costanzo (@CCOSTAN)
+# GitHub: https://github.com/CCOSTAN/Home-AssistantConfig
+# Blog: https://vCloudInfo.com
+# Description: Main configuration file for Home Assistant setup
+#-------------------------------------------
 
 homeassistant:
   # customize: !include_dir_merge_named customize
@@ -18,24 +20,7 @@ homeassistant:
 #      - !secret external_ip
      allow_bypass_login: true
 
-# This is the section that loads with the default_config
-
-dhcp:
-energy:
-frontend:
-homeassistant_alerts:
-image:
-media_source:
-my:
-network:
-person:
-sun:
-ssdp:
-stream:
-system_health:
-webhook:
-zeroconf:
-### End of the default_Config stuff
+default_config:
 
 config:
 
@@ -49,41 +34,31 @@ cloud:
         - group.outdoor_seasonal
         - group.master_bathroom_accents
         - group.kitchen_accents
+        - group.kitchen_lights
         - light.bedroom
         - light.bedroom_lights
         - light.den_lights
         - light.dinette_lights
         - light.dining_room_lights
-        - light.foyer_lights
+        - light.foyer
         - light.garage_lights
         - light.hallway_lights
-        - light.kitchen_lights
         - light.living_room_accents
         - light.living_room_lights
         - light.office_lights
         - light.outdoor_front_lights
         - light.outdoor_pool_lights
         - light.upstairs_lights
+        - light.upstairs_lamp
+        - light.sink
       include_domains:
         - switch
         - cover
         - input_boolean
         - camera
-    # entity_config:
-    #   light.kitchen_lights:
-    #     display_categories: LIGHT
 
-# http:
-#   server_port: !secret http_port
-#   ssl_certificate: !secret ssl_certificate
-#   ssl_key: !secret ssl_key
-#   ip_ban_enabled: false
-#   login_attempts_threshold: 3
-
-discovery:
-
-#updater:
-
+#discovery:
+# This groups up lights but displays them as light.xxxx
 light: !include light_groups.yaml
 
 ifttt:
@@ -98,7 +73,6 @@ logbook:
       - group.garage_doors
       - media_player.LivingRoomCC
       - py.warnings
-      - sensor.epson_xp_7100_series_uptime
       - sensor.small_garage_status
       - sensor.large_garage_status
       - sensor.small_garage_time_in_state
@@ -118,53 +92,14 @@ logbook:
       - sensor.sleepnumber_carlo_stacey_pressure
       - sensor.sleepnumber_carlo_carlo_pressure
 
-history:
-  include:
-    domains:
-      - sensor
-      - switch
-      - media_player
-      - light
-      - binary_sensor
-      - cover
-
-  exclude:
-    entities:
-     - sensor.date
-     - sensor.epson_xp_7100_series_uptime
-     - sensor.pi_hole_ads_blocked_today
-     - sensor.pi_hole_ads_percentage_blocked_today
-     - sensor.pi_hole_dns_queries_today
-     - sensor.floorplan_date
-     - sensor.floorplan_time
-     - sensor.ha_uptime
-     - sensor.time
-
 logger: !include logger.yaml
 recorder: !include recorder.yaml
-
-mqtt:
-  client_id: home-assistant-Carlo
 
 # zwave:
 #  usb_path: /dev/ttyACM0
 #  config_path: /srv/hass/hass_venv/lib/python3.4/site-packages/libopenzwave-0.3.1-py3.4-linux-armv7l.egg/config
 
-nest:
-  client_id: !secret nest_client_id
-  client_secret: !secret nest_client_secret
-
-# climate:
-#   platform: nest
-
 tts:
-  - platform: amazon_polly
-    aws_access_key_id: !secret aws_access_key_ID
-    aws_secret_access_key: !secret aws_secret_access_key
-    region_name: 'us-east-1'
-    text_type: ssml
-    voice: Joanna
-    cache: True
 
 homekit: !include homekit.yaml
 group: !include_dir_merge_named group
@@ -172,7 +107,7 @@ group: !include_dir_merge_named group
 sensor: !include_dir_merge_list sensor
 automation: !include_dir_merge_list automation
 scene: !include_dir_merge_list scene
-switch: !include_dir_merge_list switch
+# switch: !include_dir_merge_list switch
 script: !include_dir_merge_named script
 input_boolean: !include_dir_merge_named input_boolean
 shell_command: !include_dir_merge_named shell_command

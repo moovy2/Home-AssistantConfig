@@ -1,7 +1,15 @@
-###################################################
-## Various MQTT sensors
-###################################################
+#-------------------------------------------
+# MQTT Sensor Configuration
+# Description: Various MQTT sensors for Home Assistant
+#
+# For more information and updates, visit:
+# https://www.vcloudinfo.com/click-here
+#
+# Original Repository: https://github.com/CCOSTAN/Home-AssistantConfig
+#-------------------------------------------
 
-- platform: mqtt
-  state_topic: "dash/medicine/medicine_time"
-  name: "Medicine time"
+mqtt: 
+  sensor:
+    - state_topic:  "dash/medicine/medicine_time"
+      name: "Medicine time"
+      device_class: "timestamp"
